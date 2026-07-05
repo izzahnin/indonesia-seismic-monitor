@@ -159,7 +159,7 @@ FetchBMKG(ctx)
 **Format data BMKG yang perlu diperhatikan:**
 - Koordinat: string `"lat,long"` — latitude dulu, baru longitude
 - Kedalaman: string dengan satuan `"545 km"` — harus di-strip dan di-parse
-- Tsunami: string teks bebas `"Tidak berpotensi tsunami"` — dicek dengan `strings.Contains`
+- Tsunami: string teks bebas `"Berpotensi tsunami"` — dicek dengan `strings.EqualFold` + `strings.TrimSpace` (exact match, bukan contains)
 - Waktu: RFC3339 string (`"2024-01-15T06:30:00+07:00"`)
 - ID: dibentuk dari `DateTime + Coordinates` (bukan index loop) → stabil lintas fetch.
   Format: `bmkg-2024-01-15T063000+0700--6.99_125.83`. Index-based (`bmkg-0`, `bmkg-1`)
@@ -275,7 +275,7 @@ main()
 ```
 
 Tidak ada koneksi database di server — province mapping sepenuhnya hardcoded di `internal/mapper`.
-Satu-satunya env var yang dipakai: `PORT` (default 9090) dan `REDIS_URL` (opsional).
+Satu-satunya env var yang dipakai: `PORT` (default 9090).
 
 ---
 

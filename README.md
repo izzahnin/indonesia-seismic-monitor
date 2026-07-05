@@ -7,10 +7,10 @@ Data BMKG · Data Historis USGS · Risk Scoring per Provinsi
 
 [![Go](https://img.shields.io/badge/Go-1.22-00ADD8?style=flat-square&logo=go&logoColor=white)](./backend)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)](./frontend)
-[![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=flat-square&logo=redis&logoColor=white)](https://upstash.com)
 [![Vercel](https://img.shields.io/badge/Vercel-deployed-000000?style=flat-square&logo=vercel)](https://vercel.com)
+[![Render](https://img.shields.io/badge/Render-deployed-46E3B7?style=flat-square&logo=render&logoColor=white)](https://render.com)
 
-[🌐 Live Demo](#) · [📖 Backend Docs](./backend/README.md) · [🖥️ Frontend Docs](./frontend/README.md)
+[🌐 Live Demo](#) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md)
 
 </div>
 
@@ -53,12 +53,10 @@ Browser / Mobile
  Vercel (Next.js 16)              ← Dashboard: SSR, dark mode, auto-refresh 2 mnt
       │
       ▼
- Railway / Render (Go + Fiber)    ← REST API: JWT-free, partial degradation
+ Render (Go + Fiber)    ← REST API: JWT-free, partial degradation
       │
       ├──► BMKG (XML)             ← 15 gempa terbaru real-time
-      ├──► USGS (GeoJSON)         ← Historis 6 bulan, M ≥ 4.5
-      ├──► Upstash (Redis)        ← Cache response 10 menit
-      └──► Supabase (PostgreSQL)  ← Bounding box 38 provinsi
+      └──► USGS (GeoJSON)         ← Historis 6 bulan, M ≥ 4.5
 ```
 
 **Backend — alur data:**
@@ -68,8 +66,7 @@ HTTP Request
     ▼
 Handler (earthquakes.go)
     │
-    ├── Cache HIT  → return Redis cache
-    └── Cache MISS → FetchBMKG() + FetchUSGS()
+    └── FetchBMKG() + FetchUSGS()
                           │
                           ▼
                      MapToProvince()    ← koordinat → nama provinsi
@@ -78,7 +75,7 @@ Handler (earthquakes.go)
                      Calculate()        ← risk score, min-max normalization
                           │
                           ▼
-                     Set Redis cache → return response
+                     return response
 ```
 
 ---
@@ -90,8 +87,7 @@ Handler (earthquakes.go)
 | Teknologi | Kegunaan |
 |-----------|----------|
 | Go 1.22 + Fiber v2 | Web framework — routing, middleware, JSON |
-| PostgreSQL | Bounding box 38 provinsi untuk province mapping |
-| Redis (Upstash) | Cache response `/api/earthquakes` selama 10 menit |
+
 | BMKG XML API | 15 gempa terbaru real-time |
 | USGS FDSN API | Data historis 6 bulan, M ≥ 4.5, wilayah Indonesia |
 
@@ -110,9 +106,7 @@ Handler (earthquakes.go)
 | Layanan | Platform |
 |---------|----------|
 | Frontend | Vercel (auto-deploy dari GitHub) |
-| Backend | Railway / Render |
-| Database | Supabase (PostgreSQL managed) |
-| Cache | Upstash (Redis serverless) |
+| Backend | Render (Docker, auto-deploy dari GitHub) |
 
 ---
 
@@ -132,10 +126,9 @@ Handler (earthquakes.go)
 | | |
 |---|---|
 | 2 | REST API Endpoints |
-| 38 | Provinsi Indonesia (bounding box di DB) |
+| 38 | Provinsi Indonesia (bounding box hardcoded, sumber Nominatim) |
 | 2 | Sumber data (BMKG real-time + USGS historis) |
 | 6 bulan | Rentang data historis USGS |
-| 10 menit | Cache TTL Redis |
 | 2 menit | Interval auto-refresh frontend |
 
 ---
@@ -145,7 +138,7 @@ Handler (earthquakes.go)
 ```bash
 # Terminal 1 — Backend
 cd backend
-cp .env.example .env        # isi DATABASE_URL, REDIS_URL (opsional)
+cp .env.example .env        # PORT default 9090, tidak perlu diubah untuk dev lokal
 go run ./cmd/server
 # API: http://localhost:9090
 
@@ -156,7 +149,7 @@ npm install && npm run dev
 # http://localhost:3000
 ```
 
-Backend tetap jalan tanpa Redis dan PostgreSQL (fallback ke in-memory + hardcoded bbox).
+Backend tidak butuh database maupun cache eksternal. Province mapping hardcoded langsung di kode.
 
 ---
 

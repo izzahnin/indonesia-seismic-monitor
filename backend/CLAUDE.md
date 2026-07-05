@@ -1,24 +1,23 @@
 # Backend — Disaster Risk Intelligence
 
-Go service yang menyajikan data gempa BMKG + USGS, dengan Redis cache dan risk scoring per provinsi.
+Go service yang menyajikan data gempa BMKG + USGS dengan risk scoring per provinsi.
 
 ## Tech Stack
 
 - **Framework:** Fiber v2
-- **Cache:** Redis via `go-redis/v9` (Upstash free tier di prod)
 - **Module:** `github.com/izzahnin/disaster-risk-intelligence-backend`
 
 ## Struktur Paket
 
 ```
-cmd/server/main.go          entrypoint — init Fiber, Redis, routes
+cmd/server/main.go          entrypoint — init Fiber, routes
 internal/
   model/types.go            semua struct: Earthquake, ProvinceSummary, DashboardResponse, dll
-  mapper/province.go        MapToProvince(lat, lng) — bounding box 15 provinsi rawan gempa
+  mapper/province.go        MapToProvince(lat, lng) — bounding box 38 provinsi (hardcoded, sumber Nominatim)
   fetcher/bmkg.go           FetchBMKG() — parse XML BMKG, koordinat "lat,long"
   fetcher/usgs.go           FetchUSGS() — parse GeoJSON USGS, koordinat "long,lat,depth"
   scorer/risk.go            Calculate() — group by province, min-max normalization, risk_score
-  cache/redis.go            Client wrapper — Get/Set, no-op kalau REDIS_URL kosong
+  cache/redis.go            Client wrapper — tidak dipakai di production (no-op)
   handler/earthquakes.go    GET /api/earthquakes, GET /api/health
 ```
 
@@ -26,7 +25,6 @@ internal/
 
 Salin `.env.example` ke `.env`:
 ```
-REDIS_URL=redis://...   # kosongkan untuk no-op cache (dev tanpa Redis)
 PORT=9090
 ```
 
@@ -41,10 +39,10 @@ go build ./...               # verifikasi kompilasi
 ## Endpoints
 
 - `GET /api/health` → `{"status":"ok"}`
-- `GET /api/earthquakes` → `DashboardResponse` JSON (cache TTL 10 menit)
+- `GET /api/earthquakes` → `DashboardResponse` JSON
 
 ## Catatan Penting
 
 - Koordinat BMKG: `lat,long` — USGS: `long,lat,depth` — normalisasi dilakukan di masing-masing fetcher
 - Partial degradation: kalau BMKG atau USGS gagal, tetap return data dari sumber yang berhasil
-- Redis down = fallback fetch on-demand tanpa cache, app tidak crash
+- Province mapping tidak butuh database — 38 bbox hardcoded di `internal/mapper/province.go`

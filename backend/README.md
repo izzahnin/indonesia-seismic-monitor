@@ -1,6 +1,6 @@
 # Disaster Risk Intelligence — Backend
 
-REST API untuk dashboard risiko gempa bumi Indonesia. Menggabungkan data real-time BMKG dan data historis USGS, menghasilkan risk score per provinsi, dengan Redis cache untuk efisiensi.
+REST API untuk dashboard risiko gempa bumi Indonesia. Menggabungkan data real-time BMKG dan data historis USGS, menghasilkan risk score per provinsi.
 
 ## Tech Stack
 
@@ -8,14 +8,14 @@ REST API untuk dashboard risiko gempa bumi Indonesia. Menggabungkan data real-ti
 |---|---|
 | Language | Go 1.22+ |
 | Framework | Fiber v2 |
-| Cache | Redis (go-redis/v9) — Upstash di production |
+
 | Testing | Go `testing` package |
 
 ## Setup & Run
 
 ### Prasyarat
 - Go 1.22+
-- (Opsional) Redis — jika tidak ada, app tetap jalan tanpa cache
+
 
 ### 1. Clone & install dependencies
 
@@ -33,7 +33,6 @@ cp .env.example .env
 | Variable | Default | Keterangan |
 |---|---|---|
 | `PORT` | `9090` | Port HTTP server |
-| `REDIS_URL` | _(kosong)_ | URL Redis. Kosongkan untuk dev tanpa cache |
 
 ### 3. Jalankan server
 
@@ -53,7 +52,7 @@ Server berjalan di `http://localhost:9090`.
 
 ### `GET /api/earthquakes`
 
-Data gabungan BMKG (live feed) + USGS (historis 6 bulan), risk score per provinsi, dan statistik ringkas. Di-cache Redis selama **10 menit**.
+Data gabungan BMKG (live feed) + USGS (historis 6 bulan), risk score per provinsi, dan statistik ringkas.
 
 Jika salah satu sumber data gagal, endpoint tetap merespons dengan data yang tersedia (`partial_data: true`).
 
