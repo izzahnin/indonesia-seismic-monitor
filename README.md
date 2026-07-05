@@ -10,7 +10,7 @@ Data BMKG · Data Historis USGS · Risk Scoring per Provinsi
 [![Vercel](https://img.shields.io/badge/Vercel-deployed-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![Render](https://img.shields.io/badge/Render-deployed-46E3B7?style=flat-square&logo=render&logoColor=white)](https://render.com)
 
-[🌐 Live Demo](#) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md)
+[🌐 Live Demo](https://disaster-risk-initelligence.vercel.app/) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md)
 
 </div>
 
@@ -32,15 +32,9 @@ Dashboard web full-stack untuk memantau dan menganalisis risiko gempa bumi di se
 
 ## Screenshots
 
-> *Tambahkan screenshot dengan drag & drop ke GitHub Issue untuk mendapatkan URL gambar, lalu tempel di sini.*
-
 | Dashboard — Light Mode | Dashboard — Dark Mode |
 |:---:|:---:|
-| *(screenshot)* | *(screenshot)* |
-
-| Peta + Live Feed | Mobile View |
-|:---:|:---:|
-| *(screenshot)* | *(screenshot)* |
+| <img width="1863" height="1657" alt="screencapture-disaster-risk-initelligence-vercel-app-2026-07-06-01_00_44" src="https://github.com/user-attachments/assets/b629cce7-9a7e-4f31-b3af-24a84215d906" /> | <img width="1863" height="1657" alt="screencapture-disaster-risk-initelligence-vercel-app-2026-07-06-01_01_06" src="https://github.com/user-attachments/assets/98f80b80-05a5-40c9-aab7-824d927445ec" />|
 
 ---
 
