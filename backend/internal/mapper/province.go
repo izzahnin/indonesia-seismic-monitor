@@ -14,61 +14,62 @@ type bbox struct {
 }
 
 // provinceBoxes adalah bounding box 38 provinsi Indonesia.
-// Koordinat bersumber dari Nominatim OpenStreetMap (via cmd/seed) dengan
-// koreksi manual untuk provinsi hasil pemekaran 2022 yang belum tersedia di Nominatim.
-// Akurasi cukup untuk klasifikasi gempa per provinsi — bukan batas administratif resmi BPS.
+// Koordinat bersumber dari Nominatim OpenStreetMap — sama persis dengan yang
+// dihasilkan cmd/seed. 6 provinsi pakai nilai hardcoded karena Nominatim tidak
+// mengembalikan batas administratif yang akurat untuk wilayah tersebut:
+// Bali, NTT, Sulawesi Utara, Sulawesi Tenggara, Maluku, Papua Selatan.
 var provinceBoxes = []bbox{
 	// ── Sumatera ──
-	{"Aceh", 2.0, 5.9, 95.0, 98.3},
-	{"Sumatera Utara", 1.0, 4.5, 97.5, 100.0},
-	{"Sumatera Barat", -3.5, 0.5, 98.5, 101.5},
-	{"Riau", 0.0, 3.0, 100.0, 109.0},
-	{"Kepulauan Riau", -1.0, 4.5, 103.5, 109.0},
-	{"Jambi", -3.5, 0.5, 101.5, 104.5},
-	{"Sumatera Selatan", -5.5, -1.5, 102.0, 107.0},
-	{"Kepulauan Bangka Belitung", -3.5, -1.0, 105.0, 108.5},
-	{"Bengkulu", -5.5, -2.0, 101.0, 104.0},
-	{"Lampung", -5.9, -3.5, 103.5, 106.0},
+	{"Aceh", 1.4586943, 6.2744496, 94.7717124, 98.6866758},
+	{"Sumatera Utara", -1.0336376, 4.4395487, 96.7203878, 100.5496202},
+	{"Sumatera Barat", -3.8839573, 0.9067222, 98.2364008, 101.8928544},
+	{"Riau", -1.1281595, 3.2269013, 100.0248488, 103.9519995},
+	{"Kepulauan Riau", -1.1825041, 4.9966383, 103.0646322, 109.7135102},
+	{"Jambi", -2.7700765, -0.6436003, 101.1305567, 105.0122093},
+	{"Sumatera Selatan", -4.9241592, -1.5138437, 102.0638889, 106.6026347},
+	{"Kepulauan Bangka Belitung", -4.9993635, -0.2732799, 104.9996082, 109.3897948},
+	{"Bengkulu", -5.7189866, -2.2886667, 100.6204863, 103.7810669},
+	{"Lampung", -6.4550344, -3.7237393, 103.5068774, 106.8466516},
 
 	// ── Jawa ──
-	{"DKI Jakarta", -6.4, -6.1, 106.7, 107.0},
-	{"Banten", -7.0, -5.9, 105.1, 106.7},
-	{"Jawa Barat", -7.8, -5.9, 106.5, 108.8},
-	{"Jawa Tengah", -8.2, -6.4, 108.5, 111.2},
-	{"DI Yogyakarta", -8.2, -7.6, 110.0, 110.8},
-	{"Jawa Timur", -8.8, -6.9, 111.0, 114.5},
+	{"DKI Jakarta", -6.3744575, -4.9993635, 106.3146732, 106.9739750},
+	{"Banten", -7.4565894, -5.4996381, 104.6513179, 106.7800127},
+	{"Jawa Barat", -8.0207481, -4.0387936, 106.0509508, 109.0697907},
+	{"Jawa Tengah", -8.4411879, -4.0387936, 108.5558548, 111.8689695},
+	{"DI Yogyakarta", -8.4159039, -7.5412887, 109.9017890, 110.8386897},
+	{"Jawa Timur", -9.0301357, -4.8926893, 110.8815987, 116.4841801},
 
 	// ── Bali & Nusa Tenggara ──
 	{"Bali", -8.9, -8.05, 114.35, 115.85},
-	{"Nusa Tenggara Barat", -9.1, -8.0, 115.8, 119.1},
+	{"Nusa Tenggara Barat", -9.3098441, -7.5120245, 115.5700063, 119.4887427},
 	{"Nusa Tenggara Timur", -11.1, -8.0, 118.9, 125.05},
 
 	// ── Kalimantan ──
-	{"Kalimantan Barat", -3.1, 2.1, 108.0, 114.8},
-	{"Kalimantan Tengah", -4.7, 0.5, 111.0, 116.7},
-	{"Kalimantan Selatan", -4.7, -1.2, 114.5, 117.5},
-	{"Kalimantan Timur", -3.0, 2.5, 114.0, 119.0},
-	{"Kalimantan Utara", 1.0, 4.3, 114.5, 117.9},
+	{"Kalimantan Barat", -4.7153056, 2.3148604, 108.1386521, 114.2053845},
+	{"Kalimantan Tengah", -5.1882715, 0.7910090, 110.6795452, 115.8493588},
+	{"Kalimantan Selatan", -5.4138916, -1.3125795, 113.9911308, 117.6465697},
+	{"Kalimantan Timur", -2.4540290, 2.5690230, 113.8343353, 119.6680859},
+	{"Kalimantan Utara", 1.1140414, 4.4078230, 114.5651640, 118.7650776},
 
 	// ── Sulawesi ──
 	{"Sulawesi Utara", -1.0, 4.8, 123.0, 126.9},
-	{"Gorontalo", 0.3, 1.3, 121.5, 123.5},
-	{"Sulawesi Tengah", -3.5, 1.7, 119.5, 124.8},
-	{"Sulawesi Barat", -3.6, -0.3, 118.7, 120.0},
-	{"Sulawesi Selatan", -6.0, -0.5, 119.0, 122.0},
+	{"Gorontalo", -0.0665628, 1.3647141, 121.1612292, 123.5519226},
+	{"Sulawesi Tengah", -3.6514082, 1.5835540, 118.8772126, 124.9619235},
+	{"Sulawesi Barat", -3.9747153, -0.2274500, 116.9904732, 119.8748281},
+	{"Sulawesi Selatan", -7.9722136, -1.8906412, 116.3438210, 122.2749425},
 	{"Sulawesi Tenggara", -6.2, -2.55, 120.6, 125.8},
 
 	// ── Maluku ──
-	{"Maluku Utara", -2.5, 3.5, 124.0, 129.5},
+	{"Maluku Utara", -2.7956171, 3.4075964, 123.9232297, 130.0686205},
 	{"Maluku", -8.5, -2.8, 126.0, 135.6},
 
 	// ── Papua (termasuk provinsi hasil pemekaran 2022) ──
-	{"Papua Barat Daya", -4.5, -0.5, 129.0, 132.5},
-	{"Papua Barat", -4.5, 0.5, 131.5, 135.5},
-	{"Papua Pegunungan", -6.5, -2.5, 136.5, 141.0},
-	{"Papua Tengah", -6.5, -1.5, 134.0, 139.0},
+	{"Papua Barat Daya", -2.9766065, 1.2874153, 129.0848423, 133.5217666},
+	{"Papua Barat", -4.8517205, 0.5605096, 131.2767210, 135.3341667},
+	{"Papua Tengah", -5.4600206, -2.1825333, 134.5852579, 138.3017785},
+	{"Papua Pegunungan", -5.2648234, -3.1069562, 137.8269916, 141.0000000},
 	{"Papua Selatan", -9.3, -4.3, 136.0, 141.0},
-	{"Papua", -9.5, -1.0, 135.5, 141.0},
+	{"Papua", -3.9567276, 1.1369057, 133.5217666, 141.0130219},
 }
 
 // MapToProvince menentukan nama provinsi berdasarkan koordinat (lat, lng).
