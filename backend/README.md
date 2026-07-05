@@ -8,14 +8,12 @@ REST API untuk dashboard risiko gempa bumi Indonesia. Menggabungkan data real-ti
 |---|---|
 | Language | Go 1.22+ |
 | Framework | Fiber v2 |
-
 | Testing | Go `testing` package |
 
 ## Setup & Run
 
 ### Prasyarat
 - Go 1.22+
-
 
 ### 1. Clone & install dependencies
 

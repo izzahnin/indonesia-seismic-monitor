@@ -53,7 +53,7 @@ Browser / Mobile
  Vercel (Next.js 16)              ← Dashboard: SSR, dark mode, auto-refresh 2 mnt
       │
       ▼
- Render (Go + Fiber)    ← REST API: JWT-free, partial degradation
+ Render (Go + Fiber)    ← REST API: public, partial degradation
       │
       ├──► BMKG (XML)             ← 15 gempa terbaru real-time
       └──► USGS (GeoJSON)         ← Historis 6 bulan, M ≥ 4.5
@@ -87,7 +87,6 @@ Handler (earthquakes.go)
 | Teknologi | Kegunaan |
 |-----------|----------|
 | Go 1.22 + Fiber v2 | Web framework — routing, middleware, JSON |
-
 | BMKG XML API | 15 gempa terbaru real-time |
 | USGS FDSN API | Data historis 6 bulan, M ≥ 4.5, wilayah Indonesia |
 
