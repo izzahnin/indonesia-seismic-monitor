@@ -12,7 +12,7 @@ func TestMapToProvince(t *testing.T) {
 		{"aceh", 4.0, 96.0, "Aceh"},
 		{"jawa timur", -7.5, 112.5, "Jawa Timur"},
 		{"sulawesi utara", 1.5, 125.0, "Sulawesi Utara"},
-		{"laut terbuka", 0.0, 110.0, "Wilayah Lain"},
+		{"laut terbuka", -10.0, 107.0, "Wilayah Lain"},
 		{"di luar indonesia", 35.0, 139.0, "Wilayah Lain"},
 	}
 

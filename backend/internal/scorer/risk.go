@@ -7,15 +7,13 @@ import (
 	"github.com/izzahnin/disaster-risk-intelligence-backend/internal/model"
 )
 
-// Calculate menghitung risk_score per provinsi dari slice gempa historis (USGS).
-// Output diurutkan descending by risk_score — provinsi paling berisiko di indeks 0.
+// Calculate menghitung skor seismisitas per provinsi dari slice gempa historis (USGS).
+// Output diurutkan descending by risk_score — provinsi dengan aktivitas seismik tertinggi di indeks 0.
 //
-// Risk score dihitung dengan menggabungkan dua faktor:
-//   - Frekuensi (count): seberapa sering gempa terjadi di provinsi ini
-//   - Intensitas (avg_magnitude): rata-rata kekuatan gempanya
-//
-// Rumus akhir: risk_score = normalize(count) * 0.5 + normalize(avg_magnitude) * 0.5
-// Bobot 50:50 antara frekuensi dan intensitas.
+// Skor seismisitas mengukur aktivitas kegempaan, bukan risiko penuh (R = H × V).
+// Dua faktor dengan bobot 50:50:
+//   - Frekuensi (count): log10(count), dinormalisasi min-max antar provinsi
+//   - Intensitas (avg_magnitude): skala tetap (avgMag - 4.5) / (8.0 - 4.5) * 100
 func Calculate(earthquakes []model.Earthquake) []model.ProvinceSummary {
 	if len(earthquakes) == 0 {
 		return []model.ProvinceSummary{}
@@ -62,8 +60,8 @@ func Calculate(earthquakes []model.Earthquake) []model.ProvinceSummary {
 		})
 	}
 
-	// Isi field RiskScore di setiap summary menggunakan min-max normalization.
-	minMaxNormalize(summaries)
+	// Isi field RiskScore di setiap summary.
+	calcRiskScores(summaries)
 
 	// Urutkan descending: provinsi risk_score tertinggi tampil pertama di tabel/chart.
 	sort.Slice(summaries, func(i, j int) bool {
@@ -73,45 +71,65 @@ func Calculate(earthquakes []model.Earthquake) []model.ProvinceSummary {
 	return summaries
 }
 
-// minMaxNormalize menghitung risk_score untuk setiap ProvinceSummary menggunakan
-// min-max normalization — menskalakan nilai ke rentang 0–100 relatif terhadap semua provinsi.
+// calcRiskScores menghitung risk_score untuk setiap ProvinceSummary.
 //
-// Cara kerja min-max: nilai terendah → 0, nilai tertinggi → 100, yang lain proporsional.
-// Ini berarti risk_score bersifat relatif: provinsi dengan risk_score 80 bukan berarti
-// "80% berbahaya", tapi "lebih berbahaya dari 80% provinsi lain dalam dataset ini".
+// Dua komponen dengan bobot 50:50:
+//   - Frekuensi : min-max normalization terhadap log10(count)
+//   - Intensitas: skala tetap (avgMag - 4.5) / (8.0 - 4.5) * 100
 //
-// Edge case: jika hanya 1 provinsi (tidak ada pembanding), risk_score = 100 secara default.
-func minMaxNormalize(summaries []model.ProvinceSummary) {
+// log10(count) dipakai agar satu provinsi dengan count sangat tinggi (misal 217)
+// tidak mendominasi dan mengkompresi semua provinsi lain ke nol. Dengan log,
+// perbedaan antara count=3 dan count=20 tetap bermakna meski ada count=217.
+//
+// Skala tetap dipakai untuk avgMag agar perbedaan kecil antar provinsi
+// (misal 4.8 vs 5.0) tidak diperbesar secara artifisial oleh min-max.
+// Rentang 4.5–8.0 mencakup semua gempa yang dimonitor USGS (M≥4.5)
+// hingga gempa besar yang pernah terjadi di Indonesia.
+//
+// Skor gabungan dinormalisasi akhir ke 0–100 agar provinsi teratas selalu 100.
+//
+// Edge case: jika hanya 1 provinsi, risk_score = 100.
+func calcRiskScores(summaries []model.ProvinceSummary) {
 	if len(summaries) == 1 {
 		summaries[0].RiskScore = 100
 		return
 	}
 
-	// Cari nilai min dan max untuk count dan avg_magnitude dari semua provinsi.
-	minCount, maxCount := float64(summaries[0].Count), float64(summaries[0].Count)
-	minAvg, maxAvg := summaries[0].AvgMagnitude, summaries[0].AvgMagnitude
+	// log10(count) — min paling kecil adalah log10(1)=0.
+	logCounts := make([]float64, len(summaries))
+	for i, s := range summaries {
+		logCounts[i] = math.Log10(float64(s.Count))
+	}
+	minLog, maxLog := logCounts[0], logCounts[0]
+	for _, v := range logCounts[1:] {
+		if v < minLog {
+			minLog = v
+		}
+		if v > maxLog {
+			maxLog = v
+		}
+	}
 
-	for _, s := range summaries[1:] {
-		c := float64(s.Count)
-		if c < minCount {
-			minCount = c
+	// Hitung skor gabungan mentah, lalu normalisasi akhir ke 0–100.
+	raw := make([]float64, len(summaries))
+	for i := range summaries {
+		normCount := normalize(logCounts[i], minLog, maxLog)
+		normAvg := (summaries[i].AvgMagnitude - 4.5) / (8.0 - 4.5) * 100
+		raw[i] = normCount*0.5 + normAvg*0.5
+	}
+
+	minRaw, maxRaw := raw[0], raw[0]
+	for _, v := range raw[1:] {
+		if v < minRaw {
+			minRaw = v
 		}
-		if c > maxCount {
-			maxCount = c
-		}
-		if s.AvgMagnitude < minAvg {
-			minAvg = s.AvgMagnitude
-		}
-		if s.AvgMagnitude > maxAvg {
-			maxAvg = s.AvgMagnitude
+		if v > maxRaw {
+			maxRaw = v
 		}
 	}
 
 	for i := range summaries {
-		normCount := normalize(float64(summaries[i].Count), minCount, maxCount)
-		normAvg := normalize(summaries[i].AvgMagnitude, minAvg, maxAvg)
-		// Bobot 50:50 — frekuensi dan intensitas dianggap sama pentingnya.
-		summaries[i].RiskScore = math.Round((normCount*0.5+normAvg*0.5)*100) / 100
+		summaries[i].RiskScore = math.Round(normalize(raw[i], minRaw, maxRaw)*100) / 100
 	}
 }
 

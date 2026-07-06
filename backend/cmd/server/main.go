@@ -32,7 +32,7 @@ func main() {
 	// Fiber adalah HTTP framework yang dipakai sebagai pengganti net/http standar.
 	// Lebih cepat untuk API JSON karena dibangun di atas fasthttp.
 	app := fiber.New(fiber.Config{
-		AppName: "disaster-risk-intelligence",
+		AppName: "indonesia-seismic-monitor",
 	})
 
 	// CORS middleware mengizinkan semua origin ("*") agar frontend di localhost:3000

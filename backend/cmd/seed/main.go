@@ -102,7 +102,7 @@ func fetchBBox(province string) (minLat, maxLat, minLng, maxLng float64, err err
 	reqURL := "https://nominatim.openstreetmap.org/search?q=" + url.QueryEscape(query) + "&format=json&limit=10"
 
 	req, _ := http.NewRequest("GET", reqURL, nil)
-	req.Header.Set("User-Agent", "disaster-risk-intelligence/1.0 (cacaizzah2003@gmail.com)")
+	req.Header.Set("User-Agent", "indonesia-seismic-monitor/1.0 (cacaizzah2003@gmail.com)")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
