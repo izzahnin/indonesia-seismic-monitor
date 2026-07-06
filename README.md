@@ -34,7 +34,7 @@ Dashboard web full-stack untuk memantau aktivitas seismik di seluruh wilayah Ind
 
 | Dashboard — Light Mode | Dashboard — Dark Mode |
 |:---:|:---:|
-| <img width="1863" height="1657" alt="screencapture-disaster-risk-initelligence-vercel-app-2026-07-06-01_00_44" src="https://github.com/user-attachments/assets/b629cce7-9a7e-4f31-b3af-24a84215d906" /> | <img width="1863" height="1657" alt="screencapture-disaster-risk-initelligence-vercel-app-2026-07-06-01_01_06" src="https://github.com/user-attachments/assets/98f80b80-05a5-40c9-aab7-824d927445ec" />|
+| <img width="1863" height="1715" alt="screencapture-localhost-3000-2026-07-06-17_13_35" src="https://github.com/user-attachments/assets/a85f3966-e144-476e-a7a3-e1461fa28852" />| <img width="1863" height="1715" alt="screencapture-localhost-3000-2026-07-06-17_13_24" src="https://github.com/user-attachments/assets/5f38948b-e68f-405c-9d79-a2c4dd1875b2" />|
 
 ---
 
