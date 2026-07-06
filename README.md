@@ -3,14 +3,14 @@
 # Indonesia Seismic Monitor
 
 **Dashboard pemantauan aktivitas seismik Indonesia**  
-Data BMKG · Data Historis USGS · Skor Seismisitas per Provinsi
+Data BMKG · Data Historis USGS · Indeks Seismisitas per Provinsi
 
 [![Go](https://img.shields.io/badge/Go-1.22-00ADD8?style=flat-square&logo=go&logoColor=white)](./backend)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)](./frontend)
 [![Vercel](https://img.shields.io/badge/Vercel-deployed-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![Render](https://img.shields.io/badge/Render-deployed-46E3B7?style=flat-square&logo=render&logoColor=white)](https://render.com)
 
-[🌐 Live Demo](https://disaster-risk-initelligence.vercel.app/) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md) · [⚠️ Known Issues](KNOWN_ISSUES.md)
+[🌐 Live Demo](https://indonesia-seismic-monitor.vercel.app/) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md) · [⚠️ Known Issues](KNOWN_ISSUES.md)
 
 </div>
 
