@@ -102,9 +102,18 @@ Pola ini memungkinkan development lokal tanpa Redis — app berjalan normal, han
 ---
 
 ### 4. `internal/scorer/risk.go`
-**Peran:** Menghitung `risk_score` per provinsi dari slice `[]Earthquake` menggunakan min-max normalization.
+**Peran:** Menghitung `risk_score` per provinsi dari slice `[]Earthquake`.
 
-**Konseptual:** Risk score bersifat **relatif**, bukan absolut. Angka 80 bukan berarti "80% berbahaya" — melainkan "lebih berisiko dari sebagian besar provinsi dalam dataset ini". Ini penting dipahami saat membaca angka di dashboard.
+**Konseptual:** Skor seismisitas mengukur **aktivitas kegempaan**, bukan risiko penuh (R = H × V). Angka 80 berarti aktivitas seismik provinsi itu lebih tinggi dari sebagian besar provinsi lain dalam dataset. Tidak memperhitungkan kerentanan penduduk atau kapasitas mitigasi. Skor berubah seiring data USGS 6 bulan bergulir.
+
+**Formula — dua komponen bobot 50:50:**
+
+| Komponen | Cara hitung | Alasan |
+|---|---|---|
+| Frekuensi | `normalize(log10(count))` | Log skala mencegah satu provinsi (count sangat tinggi) mendominasi dan mengkompresi semua lainnya ke nol |
+| Intensitas | `(avgMag - 4.5) / (8.0 - 4.5) * 100` | Skala tetap M4.5–8.0 mencegah perbedaan kecil (misal 4.8 vs 5.0) diperbesar artifisial oleh min-max |
+
+Skor gabungan dinormalisasi akhir ke 0–100 agar provinsi teratas selalu mendapat 100.
 
 **Struktural — alur kalkulasi:**
 ```
@@ -116,15 +125,17 @@ Calculate([]Earthquake)
     │
     ├─ Konversi ke []ProvinceSummary (hitung avgMag = sumMag/count)
     │
-    ├─ minMaxNormalize(summaries):
-    │       ├─ Cari min/max untuk count dan avgMag dari semua provinsi
-    │       ├─ normalize(val) = (val - min) / (max - min) * 100
-    │       └─ risk_score = normalize(count)*0.5 + normalize(avgMag)*0.5
+    ├─ calcRiskScores(summaries):
+    │       ├─ logCount[i] = log10(count[i])
+    │       ├─ normCount   = normalize(logCount, min, max)          → 0–100
+    │       ├─ normAvg     = (avgMag - 4.5) / (8.0 - 4.5) * 100   → 0–100 (skala tetap)
+    │       ├─ raw[i]      = normCount*0.5 + normAvg*0.5
+    │       └─ RiskScore   = normalize(raw[i], minRaw, maxRaw)      → 0–100 (normalisasi akhir)
     │
     └─ sort descending by risk_score → return []ProvinceSummary
 ```
 
-Edge case: 1 provinsi → risk_score=100 (tidak ada pembanding). Semua nilai sama → normalize() return 100.
+Edge case: 1 provinsi → risk_score=100. normalize() return 100 jika max==min.
 
 Test: `internal/scorer/risk_test.go`
 

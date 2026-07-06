@@ -1,4 +1,4 @@
-# Backend — Disaster Risk Intelligence
+# Backend — Indonesia Seismic Monitor
 
 Go service yang menyajikan data gempa BMKG + USGS dengan risk scoring per provinsi.
 

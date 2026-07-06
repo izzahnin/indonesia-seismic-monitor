@@ -1,6 +1,6 @@
-# Disaster Risk Intelligence — Backend
+# Indonesia Seismic Monitor — Backend
 
-REST API untuk dashboard risiko gempa bumi Indonesia. Menggabungkan data real-time BMKG dan data historis USGS, menghasilkan risk score per provinsi.
+REST API untuk dashboard aktivitas seismik Indonesia. Menggabungkan data terkini BMKG dan data historis USGS, menghasilkan skor seismisitas per provinsi.
 
 ## Tech Stack
 
@@ -50,7 +50,7 @@ Server berjalan di `http://localhost:9090`.
 
 ### `GET /api/earthquakes`
 
-Data gabungan BMKG (live feed) + USGS (historis 6 bulan), risk score per provinsi, dan statistik ringkas.
+Data gabungan BMKG (15 gempa terbaru) + USGS (historis 6 bulan), skor seismisitas per provinsi, dan statistik ringkas.
 
 Jika salah satu sumber data gagal, endpoint tetap merespons dengan data yang tersedia (`partial_data: true`).
 
@@ -105,7 +105,7 @@ go test ./...
 
 Unit test mencakup:
 - `internal/mapper` — `MapToProvince()` dengan berbagai koordinat
-- `internal/scorer` — kalkulasi risk score, normalisasi, urutan descending
+- `internal/scorer` — kalkulasi skor seismisitas, normalisasi, urutan descending
 
 ## Province Mapping
 

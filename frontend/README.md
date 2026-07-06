@@ -1,6 +1,6 @@
-# Disaster Risk Intelligence — Frontend
+# Indonesia Seismic Monitor — Frontend
 
-Dashboard web real-time visualisasi risiko gempa bumi Indonesia. Menampilkan peta interaktif, ranking risiko per provinsi, dan statistik live dari data BMKG + USGS.
+Dashboard visualisasi aktivitas seismik Indonesia. Menampilkan peta interaktif, ranking seismisitas per provinsi, dan statistik terkini dari data BMKG + USGS.
 
 ## Tech Stack
 
@@ -56,10 +56,10 @@ npm run lint       # ESLint
 
 ## Fitur Dashboard
 
-- **Peta Sebaran Gempa** — 15 titik gempa live feed BMKG, warna berdasarkan magnitudo, popup detail, tile switch CartoDB dark/light otomatis, zoom dibatasi ke wilayah Indonesia
+- **Peta Sebaran Gempa** — 15 titik gempa terbaru BMKG, warna berdasarkan magnitudo, popup detail, tile switch CartoDB dark/light otomatis, zoom dibatasi ke wilayah Indonesia
 - **Stat Cards** — 3 angka ringkas: menit sejak gempa terakhir, rata-rata magnitudo 15 gempa terkini, gempa terkuat 30 hari terakhir
 - **Gempa Terkini** — daftar 15 gempa terbaru dari BMKG dengan waktu WIB, kedalaman, dan indikator potensi tsunami
-- **Tabel Ranking** — 10 provinsi paling rawan gempa berdasarkan data historis USGS 6 bulan; scroll horizontal di mobile
+- **Tabel Ranking** — 10 provinsi dengan aktivitas seismik tertinggi berdasarkan data historis USGS 6 bulan; scroll horizontal di mobile
 - **Dark / Light Mode** — tema mengikuti preferensi sistem atau diubah manual via toggle
 - **Auto-refresh** — data diperbarui otomatis tiap 2 menit tanpa reload halaman
 - **Partial data banner** — notifikasi jika salah satu sumber data tidak tersedia
@@ -77,7 +77,7 @@ app/
 components/
   Map/EarthquakeMap       peta Leaflet, dynamic import (SSR disabled), tile dark/light
   Stats/StatCard          big-number card
-  Table/ProvinceRankTable tabel ranking dengan progress bar risk score, scroll mobile
+  Table/ProvinceRankTable tabel ranking dengan progress bar indeks seismisitas, scroll mobile
   ThemeToggle             tombol dark/light mode
 hooks/
   useEarthquakeData.ts    TanStack Query hook — fetch + cache

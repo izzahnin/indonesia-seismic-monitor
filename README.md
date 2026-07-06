@@ -1,16 +1,16 @@
 <div align="center">
 
-# Disaster Risk Intelligence
+# Indonesia Seismic Monitor
 
-**Dashboard real-time pemantauan risiko gempa bumi Indonesia**  
-Data BMKG · Data Historis USGS · Risk Scoring per Provinsi
+**Dashboard pemantauan aktivitas seismik Indonesia**  
+Data BMKG · Data Historis USGS · Skor Seismisitas per Provinsi
 
 [![Go](https://img.shields.io/badge/Go-1.22-00ADD8?style=flat-square&logo=go&logoColor=white)](./backend)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)](./frontend)
 [![Vercel](https://img.shields.io/badge/Vercel-deployed-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![Render](https://img.shields.io/badge/Render-deployed-46E3B7?style=flat-square&logo=render&logoColor=white)](https://render.com)
 
-[🌐 Live Demo](https://disaster-risk-initelligence.vercel.app/) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md)
+[🌐 Live Demo](https://disaster-risk-initelligence.vercel.app/) · [📖 Backend Docs](backend/README.md) · [🖥️ Frontend Docs](frontend/README.md) · [⚠️ Known Issues](KNOWN_ISSUES.md)
 
 </div>
 
@@ -18,13 +18,13 @@ Data BMKG · Data Historis USGS · Risk Scoring per Provinsi
 
 ## Tentang Proyek
 
-Dashboard web full-stack untuk memantau dan menganalisis risiko gempa bumi di seluruh wilayah Indonesia secara real-time. Menggabungkan data live dari BMKG dan data historis enam bulan dari USGS untuk menghasilkan risk score berbasis frekuensi dan kekuatan gempa per provinsi.
+Dashboard web full-stack untuk memantau aktivitas seismik di seluruh wilayah Indonesia. Menggabungkan data terkini dari BMKG (diperbarui tiap 2 menit) dan data historis enam bulan dari USGS untuk menghasilkan skor seismisitas berbasis frekuensi dan kekuatan gempa per provinsi.
 
 **Fitur utama:**
 - **Peta interaktif** — 15 titik gempa terbaru BMKG dengan warna berdasarkan magnitudo, popup detail, tile switch dark/light mode
 - **Live feed sidebar** — daftar gempa dengan waktu WIB, kedalaman, dan indikator potensi tsunami
 - **Stat cards** — menit sejak gempa terakhir, rata-rata magnitudo, gempa terkuat 30 hari
-- **Ranking risiko provinsi** — 10 provinsi paling rawan berdasarkan data historis USGS 6 bulan, dengan skor 0–100
+- **Ranking seismisitas provinsi** — 10 provinsi dengan aktivitas kegempaan tertinggi berdasarkan data historis USGS 6 bulan, dengan indeks relatif 0–100
 - **Dark / Light mode** — mengikuti preferensi sistem atau diubah manual
 - **Auto-refresh** — data diperbarui otomatis tiap 2 menit tanpa reload halaman
 
@@ -49,7 +49,7 @@ Browser / Mobile
       ▼
  Render (Go + Fiber)    ← REST API: public, partial degradation
       │
-      ├──► BMKG (XML)             ← 15 gempa terbaru real-time
+      ├──► BMKG (XML)             ← 15 gempa terbaru, polling tiap 2 menit
       └──► USGS (GeoJSON)         ← Historis 6 bulan, M ≥ 4.5
 ```
 
@@ -66,7 +66,7 @@ Handler (earthquakes.go)
                      MapToProvince()    ← koordinat → nama provinsi
                           │
                           ▼
-                     Calculate()        ← risk score, min-max normalization
+                     Calculate()        ← indeks seismisitas per provinsi
                           │
                           ▼
                      return response
@@ -81,7 +81,7 @@ Handler (earthquakes.go)
 | Teknologi | Kegunaan |
 |-----------|----------|
 | Go 1.22 + Fiber v2 | Web framework — routing, middleware, JSON |
-| BMKG XML API | 15 gempa terbaru real-time |
+| BMKG XML API | 15 gempa terbaru, polling tiap 2 menit |
 | USGS FDSN API | Data historis 6 bulan, M ≥ 4.5, wilayah Indonesia |
 
 ### Frontend [`→ /frontend`](./frontend)
@@ -107,7 +107,7 @@ Handler (earthquakes.go)
 
 | Sumber | Lisensi | Keterangan |
 |--------|---------|------------|
-| [BMKG](https://data.bmkg.go.id/) | Publik — data pemerintah Indonesia | 15 gempa terbaru, real-time |
+| [BMKG](https://data.bmkg.go.id/) | Publik — data pemerintah Indonesia | 15 gempa terbaru, diperbarui tiap 2 menit |
 | [USGS FDSN](https://earthquake.usgs.gov/fdsnws/event/1/) | Public Domain — data federal AS | Historis 6 bulan, M ≥ 4.5 |
 | [OpenStreetMap / Nominatim](https://www.openstreetmap.org/) | ODbL | Bounding box 38 provinsi |
 | [CARTO](https://carto.com/) | Gratis (non-komersial) | Tile peta dark/light mode |
@@ -120,7 +120,7 @@ Handler (earthquakes.go)
 |---|---|
 | 2 | REST API Endpoints |
 | 38 | Provinsi Indonesia (bounding box hardcoded, sumber Nominatim) |
-| 2 | Sumber data (BMKG real-time + USGS historis) |
+| 2 | Sumber data (BMKG terkini + USGS historis) |
 | 6 bulan | Rentang data historis USGS |
 | 2 menit | Interval auto-refresh frontend |
 

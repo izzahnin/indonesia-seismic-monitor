@@ -77,7 +77,7 @@ Props: `provinces: ProvinceSummary[]`, `totalEvents?`, `period?`
 Fitur:
 - Progress bar visual per baris (lebar = risk_score %)
 - Warna progress bar: merah (≥70), oranye (40-70), hijau (<40)
-- Kolom: #, Provinsi, Jumlah Gempa, Avg. Mag, Maks. Mag, Skor Risiko
+- Kolom: #, Provinsi, Jumlah Gempa, Avg. Mag, Maks. Mag, Indeks Seismisitas (relatif)
 - `overflow-x-auto` + `min-w-[540px]` agar bisa scroll horizontal di mobile
 - Hanya tampilkan 10 besar (`slice(0, 10)`)
 

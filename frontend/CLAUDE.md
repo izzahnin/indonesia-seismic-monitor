@@ -1,4 +1,4 @@
-# Frontend — Disaster Risk Intelligence
+# Frontend — Indonesia Seismic Monitor
 
 Next.js 16 App Router dashboard untuk visualisasi data gempa bumi Indonesia.
 
